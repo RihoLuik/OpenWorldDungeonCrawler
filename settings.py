@@ -8,12 +8,31 @@ def run_settings(previous_screen):
 
     SCREEN_WIDTH, SCREEN_HEIGHT = get_screen_resolution()
     screen = previous_screen # Keep the same screen
+
     scale_factor = get_scale_factor()
+    buttons = []
+
+    def update_ui():
+        """Recalculates UI elements when the window resizes."""
+        nonlocal buttons, scale_factor
+
+        button_width = int(700 * scale_factor)
+        button_height = int(100 * scale_factor)
+        button_x = int(600 * scale_factor)
+
+        buttons = [
+            Button("Toggle Window Mode", button_x, int(270 * scale_factor), button_width, button_height,
+                   toggle_window_mode),
+            Button("Increase Volume", button_x, int(430 * scale_factor), button_width, button_height,
+                   lambda: change_volume(True)),
+            Button("Decrease Volume", button_x, int(590 * scale_factor), button_width, button_height,
+                   lambda: change_volume(False)),
+            Button("Back", button_x, int(750 * scale_factor), button_width, button_height, back_to_main),
+        ]
 
     # Store the window mode
-    window_modes = ["Windowed", "Fullscreen", "Borderless"]
+    window_modes = ["Windowed", "Fullscreen"]
     current_mode_index = 0
-
     volume = 1.0
 
     # Toggle Window Mode
@@ -24,10 +43,10 @@ def run_settings(previous_screen):
 
         if mode == "Fullscreen":
             screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN)
-        elif mode == "Borderless":
-            screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.NOFRAME)
         else:
-            screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
+            # **Fix: Reset Windowed Mode to Default Resolution**
+            default_width, default_height = 1280, 720  # Change this if needed
+            screen = pygame.display.set_mode((default_width, default_height), pygame.RESIZABLE)
 
         pygame.display.flip()  # Force update
         print(f"Window Mode: {mode}")
@@ -43,13 +62,8 @@ def run_settings(previous_screen):
     def back_to_main():
         return False # This will signal the loop to exit
 
-    # Create Scaled Buttons
-    buttons = [
-        Button("Toggle Window Mode", 600, 270, 700, 100, toggle_window_mode),
-        Button("Increase Volume", 600, 430, 700, 100, lambda: change_volume(True)),
-        Button("Decrease Volume", 600, 590, 700, 100, lambda: change_volume(False)),
-        Button("Back", 600, 750, 700, 100, back_to_main),
-    ]
+    # Initialize UI elements
+    update_ui()
 
     # Settings Loop
     running = True
@@ -63,6 +77,7 @@ def run_settings(previous_screen):
             elif event.type == pygame.VIDEORESIZE:
                 SCREEN_WIDTH, SCREEN_HEIGHT = event.w, event.h
                 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
+                update_ui()  # **Recalculate UI elements when resized**
 
             for button in buttons:
                 if button.check_click(event) is False:

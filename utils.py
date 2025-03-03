@@ -1,5 +1,9 @@
 import pygame
 
+# Default design resolution
+DESIGN_WIDTH = 1920
+DESIGN_HEIGHT = 1080
+
 # Colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -12,11 +16,11 @@ def get_screen_resolution():
     return info.current_w, info.current_h
 
 # Scaling Function
-def get_scale_factor(base_width=1920, base_height=1080):
+def get_scale_factor():
     screen_width, screen_height = get_screen_resolution()
-    scale_x = screen_width / base_width
-    scale_y = screen_height / base_height
-    return min(scale_x, scale_y) # Keep uniform scaling
+    scale_x = screen_width / DESIGN_WIDTH
+    scale_y = screen_height / DESIGN_HEIGHT
+    return min(scale_x, scale_y)  # Use the smaller scale to maintain aspect ratio
 
 # Get Scaled Font
 def get_font(size):

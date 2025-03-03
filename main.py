@@ -19,17 +19,23 @@ def start_game():
     print("Starting Game...") # Placeholder
 
 def open_settings():
+    global screen, SCREEN_WIDTH, SCREEN_HEIGHT
     settings.run_settings(screen)
 
 def quit_game():
     pygame.quit()
     sys.exit()
 
+# Create buttons (adjusted for scaling)
+button_width = int(700 * scale_factor)
+button_height = int(100 * scale_factor)
+button_x = int(600 * scale_factor)
+
 # Create buttons
 buttons = [
-    Button("Start Game", 600, 270, 700, 100, start_game),
-    Button("Settings", 600, 430, 700, 100, open_settings),
-    Button("Quit", 600, 590, 700, 100, quit_game),
+    Button("Start Game", button_x, int(270 * scale_factor), button_width, button_height, start_game),
+    Button("Settings", button_x, int(430 * scale_factor), button_width, button_height, open_settings),
+    Button("Quit", button_x, int(590 * scale_factor), button_width, button_height, quit_game),
 ]
 
 # Game loop
